@@ -262,6 +262,17 @@
             width: 100%
         }
 
+        details {
+            margin-top: 14px;
+            border-top: 1px solid #2a323e;
+            padding-top: 12px
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600
+        }
+
         .empty {
             color: var(--dim);
             padding: 14px 0
@@ -334,6 +345,16 @@
                     <label>Tarif per hari (Rp)<input name="tarif" type="number" min="0"
                             value="{{ $cfg['tarif'] }}" required></label>
                     <label>Nomor rekening<input name="rekening" value="{{ $cfg['rekening'] }}"></label>
+                    <details>
+                        <summary>Tanda tangan dan rekening</summary>
+                        <label>Nama pemilik rekening<input name="atas_nama" value="{{ $cfg['atas_nama'] }}"></label>
+                        <label>Bank<input name="bank" value="{{ $cfg['bank'] }}"></label>
+                        <label>Nama atasan (penanda tangan)<input name="atasan" value="{{ $cfg['atasan'] }}"></label>
+                        <label>Jabatan atasan<input name="jabatan" value="{{ $cfg['jabatan'] }}"></label>
+                        <label>Kota<input name="kota" value="{{ $cfg['kota'] }}"></label>
+                        <label>Tanggal tanda tangan<input type="date" name="tgl_ttd"
+                                value="{{ $p->akhir->format('Y-m-d') }}"></label>
+                    </details>
                     <button id="go" disabled>Cetak 3 halaman</button>
                 </div>
             </aside>
@@ -349,6 +370,7 @@
             tiles = [...document.querySelectorAll('.t')],
             K = 'tlh:{{ $bulan }}',
             HR = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        const PF = ['nama', 'tarif', 'rekening', 'atas_nama', 'bank', 'atasan', 'jabatan', 'kota'];
         let sel = new Set(),
             tasks = {},
             last = null;
@@ -366,11 +388,7 @@
                     sel: [...sel],
                     tasks
                 }));
-                localStorage.setItem('tlh:p', JSON.stringify({
-                    nama: F.nama.value,
-                    tarif: F.tarif.value,
-                    rekening: F.rekening.value
-                }))
+                localStorage.setItem('tlh:p', JSON.stringify(Object.fromEntries(PF.map(k => [k, F.elements[k].value]))))
             } catch (e) {}
         };
         const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -415,7 +433,7 @@
             }
         };
         F.tarif.oninput = draw;
-        F.nama.oninput = F.rekening.oninput = save;
+        F.addEventListener('input', save);
         draw();
     </script>
 </body>
