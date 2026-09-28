@@ -304,7 +304,7 @@
 </head>
 
 <body>
-    <form id="f" method="post" action="{{ route('cetak') }}" target="_blank">@csrf
+    <form id="f" method="post" action="/cetak" target="_blank">@csrf
         <input type="hidden" name="bulan" value="{{ $bulan }}">
         <div class="wrap">
             <section class="cal">
