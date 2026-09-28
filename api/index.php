@@ -11,6 +11,7 @@ foreach (['app', 'framework/cache/data', 'framework/sessions', 'framework/views'
 foreach (
     [
         'LOG_CHANNEL' => 'stderr',
+        'APP_MAINTENANCE_DRIVER' => 'file',
         'SESSION_DRIVER' => 'cookie',
         'CACHE_STORE' => 'array',
         'APP_SERVICES_CACHE' => '/tmp/services.php',
