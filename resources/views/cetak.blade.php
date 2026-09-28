@@ -2,7 +2,7 @@
     use App\Support\Periode as P;
     $rp = fn($n) => number_format($n, 0, ',', '.');
     $set = $dipilih->mapWithKeys(fn($d) => [$d->format('Y-m-d') => 1]);
-    $ttd = $cfg['kota'] . ', ' . P::tanggal($p->akhir);
+    $ttd = $cfg['kota'] . ', ' . P::tanggal($tglTtd);
     $per =
         $p->awal->day .
         ' ' .
@@ -267,7 +267,8 @@
             @endforeach
         </table>
         <div class="ttd">{{ $ttd }}<br>Mengetahui,<div class="sp"></div>
-            <b>{{ $cfg['atasan'] }}</b><br>{{ $cfg['jabatan'] }}</div>
+            <b>{{ $cfg['atasan'] }}</b><br>{{ $cfg['jabatan'] }}
+        </div>
     </section>
 
     <section class="pg">
@@ -309,11 +310,13 @@
                         <td class="c tgl {{ $p->dalam($d) ? '' : 'x' }}">{{ $p->dalam($d) ? $d->day : '' }}</td>
                     @endforeach
                     <td class="c" rowspan="2">
-                        <b>{{ collect($w)->filter(fn($d) => isset($set[$d->format('Y-m-d')]))->count() }}</b></td>
+                        <b>{{ collect($w)->filter(fn($d) => isset($set[$d->format('Y-m-d')]))->count() }}</b>
+                    </td>
                 </tr>
                 <tr>
                     @foreach ($w as $d)
-                        <td class="isi {{ !$p->dalam($d) ? 'x' : (isset($set[$d->format('Y-m-d')]) ? '' : 'off') }}"></td>
+                        <td class="isi {{ !$p->dalam($d) ? 'x' : (isset($set[$d->format('Y-m-d')]) ? '' : 'off') }}">
+                        </td>
                     @endforeach
                 </tr>
             @endforeach
