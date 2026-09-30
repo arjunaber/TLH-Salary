@@ -328,10 +328,10 @@
 
         .metric + .metric { border-left: 1px solid var(--line); }
 
-        .metric span,
-        .metric strong { display: block; }
+        .metric > span,
+        .metric > strong { display: block; }
 
-        .metric span {
+        .metric > span {
             margin-bottom: 5px;
             color: var(--muted);
             font-size: 12px;
@@ -746,3 +746,101 @@
                 }[character];
             });
         };
+
+        function save() {
+            try {
+                localStorage.setItem(storageKey, JSON.stringify({
+                    selected: Array.from(selected),
+                    tasks: tasks
+                }));
+                localStorage.setItem('tlh:profile', JSON.stringify(Object.fromEntries(
+                    profileFields.map(function (key) {
+                        return [key, form.elements[key].value];
+                    })
+                )));
+            } catch (error) {
+                // Penyimpanan lokal bersifat opsional. Form tetap dapat digunakan.
+            }
+        }
+
+        function draw() {
+            tiles.forEach(function (tile) {
+                const isSelected = selected.has(tile.dataset.date);
+                tile.classList.toggle('selected', isSelected);
+                tile.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            const dates = Array.from(selected).sort();
+            const total = dates.length;
+            selectedTotal.textContent = total;
+            taskCount.textContent = total + ' tanggal dipilih';
+            salaryTotal.textContent = 'Rp ' + (total * (+form.elements.tarif.value || 0)).toLocaleString('id-ID');
+
+            taskRows.innerHTML = total ? dates.map(function (date, index) {
+                const parsed = new Date(date + 'T00:00:00');
+                return '<label class="task-entry"><b>' + (index + 1) + '</b>' +
+                    '<span class="task-date">' + weekdays[parsed.getDay()] + ' ' +
+                    date.slice(8) + '/' + date.slice(5, 7) + '</span>' +
+                    '<input name="task[' + date + ']" maxlength="300" ' +
+                    'placeholder="Tuliskan kegiatan pada tanggal ini" value="' +
+                    escapeAttribute(tasks[date] || '') + '"></label>' +
+                    '<input type="hidden" name="tgl[]" value="' + date + '">';
+            }).join('') : '<div class="task-empty"><strong>Belum ada tanggal dipilih</strong>' +
+                '<span>Pilih hari kerja pada kalender untuk mulai mengisi kegiatan.</span></div>';
+
+            printButton.disabled = total === 0;
+            save();
+        }
+
+        tiles.forEach(function (tile, index) {
+            tile.addEventListener('click', function (event) {
+                const date = tile.dataset.date;
+                if (event.shiftKey && lastIndex !== null) {
+                    const shouldSelect = !selected.has(date);
+                    const bounds = [lastIndex, index].sort(function (a, b) { return a - b; });
+                    for (let current = bounds[0]; current <= bounds[1]; current++) {
+                        if (shouldSelect) {
+                            selected.add(tiles[current].dataset.date);
+                        } else {
+                            selected.delete(tiles[current].dataset.date);
+                        }
+                    }
+                } else if (selected.has(date)) {
+                    selected.delete(date);
+                } else {
+                    selected.add(date);
+                }
+
+                lastIndex = index;
+                draw();
+            });
+        });
+
+        document.getElementById('select-weekdays').addEventListener('click', function () {
+            tiles.forEach(function (tile) {
+                if (+tile.dataset.weekday < 6) {
+                    selected.add(tile.dataset.date);
+                }
+            });
+            draw();
+        });
+
+        document.getElementById('clear-selection').addEventListener('click', function () {
+            selected.clear();
+            lastIndex = null;
+            draw();
+        });
+
+        taskRows.addEventListener('input', function (event) {
+            if (event.target.name && event.target.name.startsWith('task[')) {
+                tasks[event.target.name.slice(5, -1)] = event.target.value;
+                save();
+            }
+        });
+
+        form.elements.tarif.addEventListener('input', draw);
+        form.addEventListener('input', save);
+        draw();
+    </script>
+</body>
+</html>

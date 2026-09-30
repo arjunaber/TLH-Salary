@@ -29,7 +29,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Pengajuan TLH {{ $per }}</title>
+    <title>Form Pencairan Honor TLH {{ $per }}</title>
     <style>
         @page {
             size: A4 portrait;
@@ -376,7 +376,7 @@
     </section>
 
     <section class="pg attendance">
-        <div class="jdl">DAFTAR HADIR TENAGA MAGANG (TLH)</div>
+        <div class="jdl">DAFTAR HADIR TENAGA LEPAS HARIAN (TLH)</div>
         <table class="info">
             <tr>
                 <td>UNIT</td>
@@ -443,7 +443,7 @@
     </section>
 
     <section class="pg honor">
-        <div class="jdl">HONOR TENAGA MAGANG (TLH)<br>UNIT {{ $cfg['unit_honor'] }}<br>PERIODE {{ $per }}
+        <div class="jdl">FORM PENCAIRAN HONOR TENAGA LEPAS HARIAN (TLH)<br>UNIT {{ $cfg['unit_honor'] }}<br>PERIODE {{ $per }}
         </div>
         <table>
             <colgroup>

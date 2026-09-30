@@ -16,9 +16,9 @@ class ExampleTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertSee('Administrasi TLH')
-            ->assertSee('images/telkom-university-logo.jpg', false)
-            ->assertSee('Cetak 3 dokumen');
+            ->assertSee('Form Pencairan Honor TLH')
+            ->assertSee('images/telkom-university-logo.png', false)
+            ->assertSee('Cetak formulir pencairan');
     }
 
     public function test_print_view_uses_expected_pages_and_signatures(): void
@@ -43,6 +43,8 @@ class ExampleTest extends TestCase
             ->assertOk()
             ->assertSee('class="pg task-page"', false)
             ->assertSee('class="pg attendance"', false)
+            ->assertSee('DAFTAR HADIR TENAGA LEPAS HARIAN (TLH)')
+            ->assertSee('FORM PENCAIRAN HONOR TENAGA LEPAS HARIAN (TLH)')
             ->assertSee('Pertanggungan oleh,')
             ->assertSee('Dr. Toufan Diansyah Tambunan, S.T., M.T')
             ->assertSee('NIP. 15850031-1')
