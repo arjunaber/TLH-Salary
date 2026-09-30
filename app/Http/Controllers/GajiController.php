@@ -29,14 +29,20 @@ class GajiController extends Controller
       'atas_nama' => 'nullable|string|max:100',
       'bank' => 'nullable|string|max:40',
       'atasan' => 'nullable|string|max:100',
+      'atasan_nip' => 'nullable|string|max:40',
       'jabatan' => 'nullable|string|max:100',
+      'penanggung_jawab' => 'nullable|string|max:100',
+      'penanggung_jawab_nip' => 'nullable|string|max:40',
       'kota' => 'nullable|string|max:60',
       'tgl_ttd' => 'nullable|date_format:Y-m-d'
     ]);
     $p = new Periode($v['bulan']);
     $dipilih = collect($v['tgl'])->unique()->map(fn($d) => C::parse($d))->filter(fn($d) => $p->dalam($d))
       ->sortBy(fn($d) => $d->timestamp)->values();
-    $isi = array_filter(collect($v)->only(['rekening', 'atas_nama', 'bank', 'atasan', 'jabatan', 'kota'])->all(), 'filled');
+    $isi = array_filter(collect($v)->only([
+      'rekening', 'atas_nama', 'bank', 'atasan', 'atasan_nip', 'jabatan',
+      'penanggung_jawab', 'penanggung_jawab_nip', 'kota'
+    ])->all(), 'filled');
     $cfg = array_merge(config('tlh'), ['nama' => $v['nama'], 'tarif' => (int)$v['tarif']], $isi);
     $tglTtd = filled($v['tgl_ttd'] ?? null) ? C::parse($v['tgl_ttd']) : $p->akhir;
     return view('cetak', [

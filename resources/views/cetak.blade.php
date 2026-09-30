@@ -21,6 +21,8 @@
         'Direktorat/Fakultas' => $cfg['direktorat'],
         'Periode Laporan' => $per,
     ];
+    $taskRowHeight = round(max(5.2, min(8.4, 168 / max($jml, 1))), 2);
+    $taskFontSize = $jml > 25 ? 7.5 : ($jml > 20 ? 8 : 9);
 @endphp
 <!doctype html>
 <html lang="id">
@@ -32,6 +34,16 @@
         @page {
             size: A4 portrait;
             margin: 15mm 16mm
+        }
+
+        @page task {
+            size: A4 portrait;
+            margin: 8mm 10mm
+        }
+
+        @page attendance {
+            size: A4 landscape;
+            margin: 8mm 12mm
         }
 
         @page honor {
@@ -59,6 +71,37 @@
 
         .honor {
             page: honor
+        }
+
+        .task-page {
+            page: task
+        }
+
+        .attendance {
+            page: attendance
+        }
+
+        .attendance .jdl {
+            margin-bottom: 3mm;
+            padding-bottom: 2mm
+        }
+
+        .attendance .info {
+            margin-bottom: 3mm
+        }
+
+        .attendance .pr td,
+        .attendance .pr th {
+            padding: 1mm 1.5mm;
+            font-size: 8.5pt
+        }
+
+        .attendance .pr .tgl {
+            height: 5mm
+        }
+
+        .attendance .pr .isi {
+            height: 9mm
         }
 
         .jdl {
@@ -128,11 +171,41 @@
         }
 
         .task td {
-            height: 9.5mm
+            height: var(--task-row-height);
+            padding: 1mm 1.5mm;
+            font-size: var(--task-font-size);
+            line-height: 1.15
         }
 
         .task td.t {
             text-align: left
+        }
+
+        .task-copy {
+            max-height: calc(var(--task-row-height) - 2mm);
+            overflow: hidden
+        }
+
+        .task-page .jdl {
+            margin-bottom: 3mm;
+            padding-bottom: 2mm
+        }
+
+        .task-page .info {
+            margin-bottom: 3mm;
+            font-size: 9pt
+        }
+
+        .task-page .info td {
+            padding-block: .6mm
+        }
+
+        .task-page .ttd {
+            margin-top: 4mm
+        }
+
+        .task-page .ttd .sp {
+            height: 16mm
         }
 
         .tgl {
@@ -201,6 +274,36 @@
             width: 78mm
         }
 
+        .attendance-approval {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 40mm;
+            margin-top: 5mm;
+            border: 1px solid #000;
+            page-break-inside: avoid
+        }
+
+        .attendance-approval>div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2mm 4mm;
+            text-align: center
+        }
+
+        .attendance-approval>div+div {
+            border-left: 1px solid #000
+        }
+
+        .attendance-approval .sp {
+            flex: 1;
+            min-height: 17mm
+        }
+
+        .nip {
+            white-space: nowrap
+        }
+
         .bar {
             position: fixed;
             top: 10px;
@@ -228,7 +331,8 @@
 <body>
     <div class="bar"><button onclick="print()">Cetak</button></div>
 
-    <section class="pg">
+    <section class="pg task-page"
+        style="--task-row-height: {{ $taskRowHeight }}mm; --task-font-size: {{ $taskFontSize }}pt">
         <div class="jdl">FORM TASK LIST TENAGA LEPAS HARIAN (TLH)<br>TELKOM UNIVERSITY</div>
         <table class="info">
             @foreach ($info as $k => $v)
@@ -260,18 +364,18 @@
                 <tr>
                     <td class="c">{{ $i + 1 }}</td>
                     <td>{{ P::label($d) }}</td>
-                    <td class="t">{{ $task[$d->format('Y-m-d')] ?? '' }}</td>
+                    <td class="t"><div class="task-copy">{{ $task[$d->format('Y-m-d')] ?? '' }}</div></td>
                     <td></td>
                     <td></td>
                 </tr>
             @endforeach
         </table>
-        <div class="ttd">{{ $ttd }}<br>Mengetahui,<div class="sp"></div>
-            <b>{{ $cfg['atasan'] }}</b><br>{{ $cfg['jabatan'] }}
+        <div class="ttd">{{ $ttd }}<br>Mengetahui,<br>{{ $cfg['jabatan'] }}<div class="sp"></div>
+            <b>{{ $cfg['atasan'] }}</b><br><span class="nip">NIP. {{ $cfg['atasan_nip'] }}</span>
         </div>
     </section>
 
-    <section class="pg">
+    <section class="pg attendance">
         <div class="jdl">DAFTAR HADIR TENAGA MAGANG (TLH)</div>
         <table class="info">
             <tr>
@@ -326,6 +430,16 @@
             </tr>
         </table>
         <p class="ket"><i class="off"></i>Arsir = tidak masuk, tidak perlu paraf.</p>
+        <div class="attendance-approval">
+            <div>Mengetahui,<br>{{ $cfg['jabatan'] }}<div class="sp"></div>
+                <b>{{ $cfg['atasan'] }}</b>
+                <span class="nip">NIP. {{ $cfg['atasan_nip'] }}</span>
+            </div>
+            <div>Pertanggungan oleh,<div class="sp"></div>
+                <b>{{ $cfg['penanggung_jawab'] }}</b>
+                <span class="nip">NIP. {{ $cfg['penanggung_jawab_nip'] }}</span>
+            </div>
+        </div>
     </section>
 
     <section class="pg honor">
@@ -373,7 +487,9 @@
         </table>
         <div class="ttd" style="margin-top:18px">{{ $ttd }}</div>
         <div class="dua" style="margin-top:6px">
-            <div>Mengetahui<div class="sp"></div><b>{{ $cfg['atasan'] }}</b><br>{{ $cfg['jabatan'] }}</div>
+            <div>Mengetahui<div class="sp"></div><b>{{ $cfg['atasan'] }}</b><br>{{ $cfg['jabatan'] }}<br>
+                <span class="nip">NIP. {{ $cfg['atasan_nip'] }}</span>
+            </div>
             <div>Yang Mempertanggungkan<div class="sp"></div><b>{{ $cfg['nama'] }}</b></div>
         </div>
     </section>

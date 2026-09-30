@@ -1,441 +1,748 @@
 <!doctype html>
 <html lang="id">
-
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Hitung gaji TLH</title>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Instrument+Sans:wght@400;500;600&display=swap">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Form pencairan honor Tenaga Lepas Harian Telkom University.">
+    <title>Form Pencairan Honor TLH | Telkom University</title>
     <style>
         :root {
-            --paper: #e4e7ec;
-            --tile: #f4f6f9;
-            --ink: #0e1116;
-            --dim: #667080;
-            --line: #c2c8d2;
-            --cobalt: #2433ff;
-            --cut: 12px
+            color-scheme: light;
+            --accent: #b3262d;
+            --accent-hover: #921f25;
+            --accent-soft: #f8e9ea;
+            --ink: #242428;
+            --muted: #65666d;
+            --line: #d9dbe0;
+            --line-strong: #bfc2c9;
+            --canvas: #f3f4f6;
+            --surface: #fefefe;
+            --surface-soft: #f7f7f8;
+            --radius-panel: 12px;
+            --radius-control: 8px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0
-        }
+        * { box-sizing: border-box; }
+
+        html { background: var(--canvas); }
 
         body {
-            font: 15px/1.5 'Instrument Sans', system-ui, sans-serif;
-            background: var(--paper);
+            margin: 0;
+            min-width: 320px;
             color: var(--ink);
-            min-height: 100vh
+            background: var(--canvas);
+            font-family: Aptos, "Segoe UI", Arial, sans-serif;
+            line-height: 1.45;
         }
 
-        h1,
-        .num {
-            font-family: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
-            font-weight: 900;
-            line-height: .9
+        button,
+        input { font: inherit; }
+
+        button { cursor: pointer; }
+
+        .site-header {
+            border-bottom: 1px solid var(--line);
+            background: var(--surface);
         }
 
-        .wrap {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 340px;
-            gap: 28px;
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 32px 24px
+        .header-inner,
+        .page {
+            width: min(1180px, calc(100% - 40px));
+            margin-inline: auto;
         }
 
-        .cal {
-            grid-column: 1
-        }
-
-        .side {
-            grid-column: 2;
-            grid-row: 1/3;
-            position: sticky;
-            top: 24px;
-            align-self: start
-        }
-
-        .bar {
+        .header-inner {
+            min-height: 84px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: flex-end;
-            gap: 16px;
-            margin-bottom: 18px;
-            flex-wrap: wrap
+            gap: 32px;
         }
 
-        h1 {
-            font-size: 44px;
-            letter-spacing: .01em
+        .brand-logo {
+            display: block;
+            width: 218px;
+            height: auto;
         }
 
-        input {
-            font: inherit;
-            color: inherit
+        .header-context {
+            max-width: 470px;
+            padding-left: 24px;
+            border-left: 1px solid var(--line);
+            text-align: right;
         }
 
-        input[type=month] {
-            background: var(--tile);
-            border: 1px solid var(--line);
-            padding: 8px 10px
+        .header-context span,
+        .header-context strong { display: block; }
+
+        .header-context span {
+            margin-bottom: 2px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        .grid {
+        .header-context strong {
+            font-size: 15px;
+            font-weight: 650;
+        }
+
+        .page { padding-block: 34px 44px; }
+
+        .page-heading {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 28px;
+            margin-bottom: 24px;
         }
 
-        .dn {
-            font-weight: 600;
-            color: var(--dim);
-            font-size: 13px;
-            padding: 0 2px
+        .page-heading h1 {
+            max-width: 660px;
+            margin: 0;
+            font-size: clamp(28px, 4vw, 38px);
+            line-height: 1.12;
+            letter-spacing: -0.025em;
         }
 
-        .t,
-        .g {
-            aspect-ratio: 1/.86;
-            min-height: 54px
+        .page-heading p {
+            max-width: 620px;
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 16px;
         }
 
-        .t {
-            position: relative;
+        .period-block {
+            min-width: 255px;
+            padding: 14px 16px;
             border: 1px solid var(--line);
-            background: var(--tile);
-            cursor: pointer;
-            text-align: left;
-            padding: 6px 8px;
-            font: inherit;
-            clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, 0 100%);
-            transition: background .12s, color .12s
+            border-radius: var(--radius-control);
+            background: var(--surface);
         }
 
-        .t.we {
-            background: repeating-linear-gradient(135deg, var(--tile) 0 5px, #e8ebf0 5px 6px)
+        .period-block > span {
+            display: block;
+            margin-bottom: 2px;
+            color: var(--muted);
+            font-size: 12px;
         }
 
-        .t .num {
-            font-size: 30px;
-            display: block
+        .period-block strong {
+            display: block;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
         }
 
-        .t small {
-            color: var(--dim);
-            font-size: 12px
-        }
-
-        .t:hover {
-            border-color: var(--ink)
-        }
-
-        .t.on {
-            background: var(--cobalt);
-            border-color: var(--cobalt);
-            color: #fff
-        }
-
-        .t.on small {
-            color: #c9ceff
-        }
-
-        .t:focus-visible,
-        button:focus-visible,
-        input:focus-visible {
-            outline: 2px solid var(--cobalt);
-            outline-offset: 2px
-        }
-
-        .hint {
-            color: var(--dim);
-            font-size: 13px;
-            margin-top: 12px
-        }
-
-        .q {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px
-        }
-
-        .q button {
-            border: 1px solid var(--ink);
-            background: none;
-            padding: 7px 12px;
-            font: inherit;
-            cursor: pointer
-        }
-
-        .q button:hover {
-            background: var(--ink);
-            color: #fff
+        .form-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 348px;
+            gap: 20px;
+            align-items: start;
         }
 
         .panel {
-            background: var(--ink);
-            color: #fff;
-            padding: 24px;
-            clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%)
+            border: 1px solid var(--line);
+            border-radius: var(--radius-panel);
+            background: var(--surface);
         }
 
-        .panel .num {
-            font-size: 170px;
-            letter-spacing: -.02em
+        .calendar-panel,
+        .tasks-panel { padding: 24px; }
+
+        .panel-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .panel .u {
-            font-size: 18px;
-            color: #9aa4b4;
-            margin: 6px 0 20px
+        .panel-heading h2,
+        .summary-panel h2 {
+            margin: 0;
+            font-size: 20px;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
         }
 
-        .rp {
-            font: 900 34px 'Big Shoulders Display', sans-serif;
-            border-top: 1px solid #2a323e;
-            padding-top: 14px
+        .panel-heading p,
+        .summary-panel header p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
         }
 
-        .panel label {
-            display: block;
-            margin-top: 14px;
-            color: #9aa4b4;
-            font-size: 13px
-        }
-
-        .panel input {
-            width: 100%;
-            background: #171c25;
-            border: 1px solid #2a323e;
-            padding: 8px 10px;
-            margin-top: 4px;
-            color: #fff
-        }
-
-        #go {
-            width: 100%;
-            margin-top: 22px;
-            background: var(--cobalt);
-            color: #fff;
-            border: 0;
-            padding: 14px;
-            font: 600 16px 'Instrument Sans', sans-serif;
-            cursor: pointer
-        }
-
-        #go:disabled {
-            background: #2a323e;
-            color: #6b7480;
-            cursor: not-allowed
-        }
-
-        .tasks {
-            grid-column: 1
-        }
-
-        .tasks h2 {
-            font: 900 26px 'Big Shoulders Display', sans-serif;
-            margin-bottom: 10px
-        }
-
-        .r {
+        .month-control,
+        .field {
             display: grid;
-            grid-template-columns: 34px 92px 1fr;
+            gap: 7px;
+            color: #45464c;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .month-control { min-width: 168px; }
+
+        input {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid var(--line-strong);
+            border-radius: var(--radius-control);
+            padding: 9px 11px;
+            color: var(--ink);
+            background: #fdfdfd;
+            outline: none;
+        }
+
+        input::placeholder { color: #74757c; }
+
+        input:hover { border-color: #979aa3; }
+
+        input:focus-visible,
+        button:focus-visible,
+        summary:focus-visible {
+            outline: 3px solid rgba(179, 38, 45, 0.22);
+            outline-offset: 2px;
+            border-color: var(--accent);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 7px;
+        }
+
+        .weekday {
+            padding: 3px 2px 7px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+            text-align: center;
+        }
+
+        .weekday .short { display: none; }
+
+        .date-tile,
+        .date-gap {
+            min-height: 62px;
+            border-radius: var(--radius-control);
+        }
+
+        .date-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+            border: 1px solid var(--line);
+            padding: 9px 10px;
+            color: var(--ink);
+            background: #fdfdfd;
+            text-align: left;
+        }
+
+        .date-tile:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .date-tile:active,
+        .action-button:active,
+        .secondary-button:active { transform: translateY(1px); }
+
+        .date-tile.weekend {
+            color: #6d6e74;
+            background: var(--surface-soft);
+        }
+
+        .date-tile.selected {
+            border-color: var(--accent);
+            color: #fefefe;
+            background: var(--accent);
+        }
+
+        .date-tile.selected small { color: #fbecee; }
+
+        .date-number {
+            font-size: 17px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date-tile small {
+            min-height: 15px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .calendar-actions {
+            display: flex;
             align-items: center;
             gap: 10px;
-            padding: 5px 0;
-            border-bottom: 1px solid var(--line)
+            margin-top: 18px;
         }
 
-        .r b {
-            font-family: 'Big Shoulders Display', sans-serif;
-            color: var(--dim);
-            font-size: 18px
+        .secondary-button {
+            min-height: 38px;
+            border: 1px solid var(--line-strong);
+            border-radius: var(--radius-control);
+            padding: 7px 12px;
+            color: var(--ink);
+            background: var(--surface);
+            font-size: 13px;
+            font-weight: 650;
         }
 
-        .r input {
-            background: transparent;
-            border: 0;
-            padding: 6px 0;
-            width: 100%
+        .secondary-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .calendar-help {
+            margin: 0 0 0 auto;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .summary-panel {
+            position: sticky;
+            top: 20px;
+            overflow: hidden;
+        }
+
+        .summary-panel header {
+            padding: 22px 22px 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .summary-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--surface-soft);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .metric {
+            min-width: 0;
+            padding: 17px 20px;
+        }
+
+        .metric + .metric { border-left: 1px solid var(--line); }
+
+        .metric span,
+        .metric strong { display: block; }
+
+        .metric span {
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .metric strong {
+            overflow-wrap: anywhere;
+            font-size: 19px;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary-fields {
+            display: grid;
+            gap: 15px;
+            padding: 20px 22px 22px;
         }
 
         details {
-            margin-top: 14px;
-            border-top: 1px solid #2a323e;
-            padding-top: 12px
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding-block: 4px;
         }
 
         summary {
+            padding: 10px 0;
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 650;
             cursor: pointer;
-            font-weight: 600
         }
 
-        .empty {
-            color: var(--dim);
-            padding: 14px 0
+        .details-fields {
+            display: grid;
+            gap: 14px;
+            padding: 6px 0 16px;
         }
 
-        @media(max-width:900px) {
-            .wrap {
-                grid-template-columns: 1fr
-            }
-
-            .side {
-                grid-column: 1;
-                grid-row: auto;
-                position: static;
-                order: -1
-            }
-
-            .panel .num {
-                font-size: 110px
-            }
+        .action-button {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-control);
+            padding: 10px 16px;
+            color: #fefefe;
+            background: var(--accent);
+            font-weight: 700;
         }
 
-        @media(prefers-reduced-motion:reduce) {
-            * {
-                transition: none !important
+        .action-button:hover:not(:disabled) {
+            border-color: var(--accent-hover);
+            background: var(--accent-hover);
+        }
+
+        .action-button:disabled {
+            border-color: #c6c8cd;
+            color: #777980;
+            background: #e5e6e9;
+            cursor: not-allowed;
+        }
+
+        .action-help {
+            margin: -5px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .tasks-panel { grid-column: 1 / -1; }
+
+        .task-count {
+            padding-top: 3px;
+            color: var(--muted);
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .task-list { border-top: 1px solid var(--line); }
+
+        .task-entry {
+            display: grid;
+            grid-template-columns: 32px 112px minmax(0, 1fr);
+            align-items: center;
+            gap: 12px;
+            min-height: 63px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .task-entry b {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .task-date {
+            font-size: 13px;
+            font-weight: 650;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .task-entry input {
+            min-height: 40px;
+            margin-block: 10px;
+        }
+
+        .task-empty { padding: 28px 4px 8px; }
+
+        .task-empty strong,
+        .task-empty span { display: block; }
+
+        .task-empty strong {
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .task-empty span,
+        .autosave-note {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .autosave-note {
+            margin: 18px 2px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .form-layout { grid-template-columns: 1fr; }
+            .summary-panel { position: static; }
+            .tasks-panel { grid-column: auto; }
+        }
+
+        @media (max-width: 680px) {
+            .header-inner,
+            .page { width: min(100% - 24px, 1180px); }
+
+            .header-inner {
+                min-height: 74px;
+                gap: 14px;
+            }
+
+            .brand-logo { width: 160px; }
+            .header-context { display: none; }
+            .page { padding-block: 24px 32px; }
+
+            .page-heading {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .period-block { min-width: 0; }
+
+            .calendar-panel,
+            .tasks-panel { padding: 16px; }
+
+            .panel-heading {
+                display: grid;
+                gap: 14px;
+            }
+
+            .month-control { min-width: 0; }
+            .calendar-grid { gap: 4px; }
+            .weekday .long { display: none; }
+            .weekday .short { display: inline; }
+
+            .date-tile,
+            .date-gap { min-height: 50px; }
+
+            .date-tile { padding: 6px; }
+            .date-number { font-size: 15px; }
+
+            .calendar-actions {
+                align-items: stretch;
+                flex-wrap: wrap;
+            }
+
+            .calendar-help {
+                flex-basis: 100%;
+                margin-left: 0;
+                text-align: left;
+            }
+
+            .task-entry {
+                grid-template-columns: 26px minmax(0, 1fr);
+                gap: 8px;
+                padding-block: 10px;
+            }
+
+            .task-entry input {
+                grid-column: 1 / -1;
+                margin: 0;
             }
         }
     </style>
 </head>
-
 <body>
-    <form id="f" method="post" action="/cetak" target="_blank">@csrf
-        <input type="hidden" name="bulan" value="{{ $bulan }}">
-        <div class="wrap">
-            <section class="cal">
-                <div class="bar">
-                    <div>
-                        <h1>Presensi<br>{{ $p->teks() }}</h1>
-                    </div>
-                    <input type="month" value="{{ $bulan }}" title="Periode berakhir tanggal 18 bulan ini"
-                        onchange="if(this.value)location='?bulan='+this.value" aria-label="Bulan akhir periode">
-                </div>
-                <div class="grid">
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $h)
-                        <div class="dn">{{ $h }}</div>
-                    @endforeach
-                    @foreach ($p->minggu() as $w)
-                        @foreach ($w as $d)
-                            @if ($p->dalam($d))
-                                <button type="button" class="t {{ $d->isWeekend() ? 'we' : '' }}"
-                                    data-d="{{ $d->format('Y-m-d') }}" data-w="{{ $d->dayOfWeekIso }}"
-                                    aria-pressed="false">
-                                    <span
-                                        class="num">{{ $d->day }}</span><small>{{ $d->day == 1 || $d->eq($p->awal) ? \App\Support\Periode::BULAN[$d->month] : '' }}</small></button>
-                            @else<div class="g"></div>
-                            @endif
-                        @endforeach
-                    @endforeach
-                </div>
-                <div class="q"><button type="button" id="wd">Pilih Senin–Jumat</button><button
-                        type="button" id="clr">Kosongkan</button></div>
-                <p class="hint">Klik tanggal untuk menandai masuk. Shift + klik memilih rentang.</p>
-            </section>
-            <aside class="side">
-                <div class="panel">
-                    <div class="num" id="n">0</div>
-                    <div class="u">hari masuk</div>
-                    <div class="rp" id="rp">Rp 0</div>
-                    <label>Nama<input name="nama" value="{{ $cfg['nama'] }}" required></label>
-                    <label>Tarif per hari (Rp)<input name="tarif" type="number" min="0"
-                            value="{{ $cfg['tarif'] }}" required></label>
-                    <label>Nomor rekening<input name="rekening" value="{{ $cfg['rekening'] }}"></label>
-                    <details>
-                        <summary>Tanda tangan dan rekening</summary>
-                        <label>Nama pemilik rekening<input name="atas_nama" value="{{ $cfg['atas_nama'] }}"></label>
-                        <label>Bank<input name="bank" value="{{ $cfg['bank'] }}"></label>
-                        <label>Nama atasan (penanda tangan)<input name="atasan" value="{{ $cfg['atasan'] }}"></label>
-                        <label>Jabatan atasan<input name="jabatan" value="{{ $cfg['jabatan'] }}"></label>
-                        <label>Kota<input name="kota" value="{{ $cfg['kota'] }}"></label>
-                        <label>Tanggal tanda tangan<input type="date" name="tgl_ttd"
-                                value="{{ $p->akhir->format('Y-m-d') }}"></label>
-                    </details>
-                    <button id="go" disabled>Cetak 3 halaman</button>
-                </div>
-            </aside>
-            <section class="tasks">
-                <h2>Task harian</h2>
-                <div id="rows"></div>
-            </section>
+    <header class="site-header">
+        <div class="header-inner">
+            <img class="brand-logo" src="{{ asset('images/telkom-university-logo.png') }}"
+                alt="Telkom University" width="3347" height="1119">
+            <div class="header-context">
+                <span>{{ $cfg['direktorat'] }}</span>
+                <strong>{{ $cfg['unit'] }}</strong>
+            </div>
         </div>
-    </form>
+    </header>
+
+    <main class="page">
+        <section class="page-heading" aria-labelledby="page-title">
+            <div>
+                <h1 id="page-title">Form Pencairan Honor TLH</h1>
+                <p>Lengkapi kehadiran dan kegiatan harian untuk menyiapkan berkas pencairan honor.</p>
+            </div>
+            <div class="period-block" aria-label="Periode pengajuan">
+                <span>Periode pengajuan</span>
+                <strong>{{ $p->teks() }}</strong>
+            </div>
+        </section>
+
+        <form id="attendance-form" method="post" action="/cetak" target="_blank">
+            @csrf
+            <input type="hidden" name="bulan" value="{{ $bulan }}">
+
+            <div class="form-layout">
+                <section class="panel calendar-panel" aria-labelledby="calendar-title">
+                    <div class="panel-heading">
+                        <div>
+                            <h2 id="calendar-title">Kehadiran TLH</h2>
+                            <p>Pilih tanggal kerja yang akan diajukan.</p>
+                        </div>
+                        <label class="month-control">
+                            Bulan laporan
+                            <input type="month" value="{{ $bulan }}" title="Periode berakhir tanggal 18 bulan ini"
+                                onchange="if (this.value) location = '?bulan=' + this.value">
+                        </label>
+                    </div>
+
+                    <div class="calendar-grid" role="grid" aria-label="Kalender kehadiran">
+                        @foreach ([['Senin', 'Sen'], ['Selasa', 'Sel'], ['Rabu', 'Rab'], ['Kamis', 'Kam'], ['Jumat', 'Jum'], ['Sabtu', 'Sab'], ['Minggu', 'Min']] as [$hari, $singkat])
+                            <div class="weekday" role="columnheader">
+                                <span class="long">{{ $hari }}</span>
+                                <span class="short">{{ $singkat }}</span>
+                            </div>
+                        @endforeach
+
+                        @foreach ($p->minggu() as $w)
+                            @foreach ($w as $d)
+                                @if ($p->dalam($d))
+                                    <button type="button" class="date-tile {{ $d->isWeekend() ? 'weekend' : '' }}"
+                                        data-date="{{ $d->format('Y-m-d') }}"
+                                        data-weekday="{{ $d->dayOfWeekIso }}"
+                                        aria-label="{{ \App\Support\Periode::label($d) }}"
+                                        aria-pressed="false" role="gridcell">
+                                        <span class="date-number">{{ $d->day }}</span>
+                                        <small>{{ $d->day === 1 || $d->eq($p->awal) ? \App\Support\Periode::BULAN[$d->month] : '' }}</small>
+                                    </button>
+                                @else
+                                    <div class="date-gap" aria-hidden="true"></div>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    </div>
+
+                    <div class="calendar-actions">
+                        <button type="button" class="secondary-button" id="select-weekdays">Pilih Senin-Jumat</button>
+                        <button type="button" class="secondary-button" id="clear-selection">Kosongkan pilihan</button>
+                        <p class="calendar-help">Klik tanggal untuk memilih. Shift + klik untuk memilih rentang.</p>
+                    </div>
+                </section>
+
+                <aside class="panel summary-panel" aria-labelledby="summary-title">
+                    <header>
+                        <h2 id="summary-title">Ringkasan pengajuan</h2>
+                        <p>Nilai honor dihitung dari jumlah hari terpilih.</p>
+                    </header>
+
+                    <div class="summary-metrics">
+                        <div class="metric">
+                            <span>Hari kerja</span>
+                            <strong><span id="selected-total" aria-live="polite">0</span> hari</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Estimasi honor</span>
+                            <strong id="salary-total">Rp 0</strong>
+                        </div>
+                    </div>
+
+                    <div class="summary-fields">
+                        <label class="field">
+                            Nama tenaga
+                            <input name="nama" value="{{ $cfg['nama'] }}" required autocomplete="name">
+                        </label>
+                        <label class="field">
+                            Tarif per hari (Rp)
+                            <input name="tarif" type="number" min="0" value="{{ $cfg['tarif'] }}" required
+                                inputmode="numeric">
+                        </label>
+                        <label class="field">
+                            Nomor rekening
+                            <input name="rekening" value="{{ $cfg['rekening'] }}" inputmode="numeric">
+                        </label>
+
+                        <details>
+                            <summary>Data rekening dan tanda tangan</summary>
+                            <div class="details-fields">
+                                <label class="field">
+                                    Nama pemilik rekening
+                                    <input name="atas_nama" value="{{ $cfg['atas_nama'] }}">
+                                </label>
+                                <label class="field">
+                                    Bank
+                                    <input name="bank" value="{{ $cfg['bank'] }}">
+                                </label>
+                                <label class="field">
+                                    Nama atasan
+                                    <input name="atasan" value="{{ $cfg['atasan'] }}">
+                                </label>
+                                <label class="field">
+                                    NIP atasan
+                                    <input name="atasan_nip" value="{{ $cfg['atasan_nip'] }}">
+                                </label>
+                                <label class="field">
+                                    Jabatan atasan
+                                    <input name="jabatan" value="{{ $cfg['jabatan'] }}">
+                                </label>
+                                <label class="field">
+                                    Penanggung jawab
+                                    <input name="penanggung_jawab" value="{{ $cfg['penanggung_jawab'] }}">
+                                </label>
+                                <label class="field">
+                                    NIP penanggung jawab
+                                    <input name="penanggung_jawab_nip" value="{{ $cfg['penanggung_jawab_nip'] }}">
+                                </label>
+                                <label class="field">
+                                    Kota
+                                    <input name="kota" value="{{ $cfg['kota'] }}">
+                                </label>
+                                <label class="field">
+                                    Tanggal tanda tangan
+                                    <input type="date" name="tgl_ttd" value="{{ $p->akhir->format('Y-m-d') }}">
+                                </label>
+                            </div>
+                        </details>
+
+                        <button class="action-button" id="print-documents" type="submit" disabled>
+                            Cetak formulir pencairan
+                        </button>
+                        <p class="action-help">Hasil cetak mencakup Task List, Daftar Hadir, dan Form Honor. Task List disusun dalam satu halaman A4.</p>
+                    </div>
+                </aside>
+
+                <section class="panel tasks-panel" aria-labelledby="tasks-title">
+                    <div class="panel-heading">
+                        <div>
+                            <h2 id="tasks-title">Kegiatan harian (Task List)</h2>
+                            <p>Isian muncul sesuai tanggal kehadiran yang dipilih.</p>
+                        </div>
+                        <span class="task-count" id="task-count">0 tanggal dipilih</span>
+                    </div>
+                    <div class="task-list" id="task-rows"></div>
+                </section>
+            </div>
+        </form>
+
+        <p class="autosave-note">Isian disimpan otomatis di perangkat ini untuk setiap periode.</p>
+    </main>
+
     <script>
-        const F = document.getElementById('f'),
-            $ = s => document.querySelector(s),
-            tiles = [...document.querySelectorAll('.t')],
-            K = 'tlh:{{ $bulan }}',
-            HR = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-        const PF = ['nama', 'tarif', 'rekening', 'atas_nama', 'bank', 'atasan', 'jabatan', 'kota'];
-        let sel = new Set(),
-            tasks = {},
-            last = null;
+        const form = document.getElementById('attendance-form');
+        const tiles = Array.from(document.querySelectorAll('.date-tile'));
+        const storageKey = 'tlh:{{ $bulan }}';
+        const weekdays = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        const profileFields = [
+            'nama', 'tarif', 'rekening', 'atas_nama', 'bank', 'atasan', 'atasan_nip',
+            'jabatan', 'penanggung_jawab', 'penanggung_jawab_nip', 'kota'
+        ];
+        const taskRows = document.getElementById('task-rows');
+        const selectedTotal = document.getElementById('selected-total');
+        const salaryTotal = document.getElementById('salary-total');
+        const taskCount = document.getElementById('task-count');
+        const printButton = document.getElementById('print-documents');
+        let selected = new Set();
+        let tasks = {};
+        let lastIndex = null;
+
         try {
-            const s = JSON.parse(localStorage.getItem(K) || '{}');
-            sel = new Set(s.sel || []);
-            tasks = s.tasks || {};
-            const p = JSON.parse(localStorage.getItem('tlh:p') || '{}');
-            for (const k in p)
-                if (F.elements[k]) F.elements[k].value = p[k];
-        } catch (e) {}
-        const save = () => {
-            try {
-                localStorage.setItem(K, JSON.stringify({
-                    sel: [...sel],
-                    tasks
-                }));
-                localStorage.setItem('tlh:p', JSON.stringify(Object.fromEntries(PF.map(k => [k, F.elements[k].value]))))
-            } catch (e) {}
-        };
-        const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-
-        function draw() {
-            tiles.forEach(t => {
-                const on = sel.has(t.dataset.d);
-                t.classList.toggle('on', on);
-                t.setAttribute('aria-pressed', on)
+            const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            selected = new Set(saved.selected || saved.sel || []);
+            tasks = saved.tasks || {};
+            const profile = JSON.parse(localStorage.getItem('tlh:profile') || localStorage.getItem('tlh:p') || '{}');
+            Object.keys(profile).forEach(function (key) {
+                if (form.elements[key]) {
+                    form.elements[key].value = profile[key];
+                }
             });
-            const ds = [...sel].sort();
-            $('#n').textContent = ds.length;
-            $('#rp').textContent = 'Rp ' + (ds.length * (+F.tarif.value || 0)).toLocaleString('id-ID');
-            $('#rows').innerHTML = ds.length ? ds.map((d, i) =>
-                `<label class="r"><b>${i+1}</b><span>${HR[new Date(d+'T00:00').getDay()]} ${d.slice(8)}/${d.slice(5,7)}</span><input name="task[${d}]" maxlength="300" placeholder="Apa yang dikerjakan hari ini" value="${esc(tasks[d]||'')}"></label><input type="hidden" name="tgl[]" value="${d}">`
-            ).join('') : '<p class="empty">Pilih tanggal masuk di kalender, kolom task muncul di sini.</p>';
-            $('#go').disabled = !ds.length;
-            save();
+        } catch (error) {
+            selected = new Set();
+            tasks = {};
         }
-        tiles.forEach((t, i) => t.onclick = e => {
-            const d = t.dataset.d;
-            if (e.shiftKey && last !== null) {
-                const on = !sel.has(d),
-                    [a, b] = [last, i].sort((x, y) => x - y);
-                for (let j = a; j <= b; j++) on ? sel.add(tiles[j].dataset.d) : sel.delete(tiles[j].dataset.d)
-            } else sel.has(d) ? sel.delete(d) : sel.add(d);
-            last = i;
-            draw()
-        });
-        $('#wd').onclick = () => {
-            tiles.forEach(t => +t.dataset.w < 6 && sel.add(t.dataset.d));
-            draw()
-        };
-        $('#clr').onclick = () => {
-            sel.clear();
-            draw()
-        };
-        $('#rows').oninput = e => {
-            if (e.target.name?.startsWith('task[')) {
-                tasks[e.target.name.slice(5, -1)] = e.target.value;
-                save()
-            }
-        };
-        F.tarif.oninput = draw;
-        F.addEventListener('input', save);
-        draw();
-    </script>
-</body>
 
-</html>
+        const escapeAttribute = function (value) {
+            return String(value).replace(/[&<>"']/g, function (character) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[character];
+            });
+        };
